@@ -1,0 +1,76 @@
+name: Acceptance Stage
+
+on:
+  workflow_call:
+
+concurrency:
+  group: test-environment
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-infra:
+    name: Deploy Infra
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Deploy infra
+        run: echo 'Deploying infra'
+
+  integration-test:
+    name: Integration Tests
+    needs: ['deploy-infra']
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: guest
+          POSTGRES_PASSWORD: guest
+          POSTGRES_DB: guest
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run tests
+        run: echo 'running integration tests'
+
+  deploy-apps:
+    name: Deploy App
+    needs: ['deploy-infra']
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ['app-1', 'app-2']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Deploy app
+        run: echo "Deploying $APP_NAME"
+        env:
+          APP_NAME: ${{ matrix.app }}

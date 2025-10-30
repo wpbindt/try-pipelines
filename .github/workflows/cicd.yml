@@ -1,0 +1,30 @@
+name: Pipeline
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  actions: read
+  id-token: write
+  contents: read
+
+jobs:
+  commit-stage:
+    name: Commit Stage
+    uses: ./.github/workflows/commit-stage.yml
+
+  acceptance-stage:
+    name: Acceptance Stage
+    needs: ['commit-stage']
+    uses: ./.github/workflows/acceptance-stage.yml
+
+  deploy-stage:
+    name: Deploy Stage
+    needs: [ 'acceptance-stage' ]
+    uses: ./.github/workflows/deploy-stage.yml
+
+  failure-alert-stage:
+    name: Failure Alert Stage
+    needs: [ 'deploy-stage' ]
+    uses: ./.github/workflows/failure-alert.yml

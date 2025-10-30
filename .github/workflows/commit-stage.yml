@@ -1,0 +1,22 @@
+name: Commit Stage
+
+on:
+  workflow_call:
+
+permissions:
+  actions: read
+  id-token: write
+  contents: read
+
+jobs:
+  lint-check-test:
+    name: Lint Check Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Lint
+        run: echo 'Linting'

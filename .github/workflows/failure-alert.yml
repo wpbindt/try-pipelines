@@ -1,0 +1,25 @@
+name: Failure alert
+on:
+  workflow_call:
+
+jobs:
+  failure-alert:
+    name: Send pipeline failure alert
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    if: always()
+    steps:
+      - name: Send Slack Message
+        if: failure()
+        env:
+          COMMITTER: ${{ github.actor }}
+          RUN_ID: ${{ github.run_id }}
+          REPOSITORY: ${{ github.repository }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          JSON_PAYLOAD=$(printf '{"text": "Pipeline <%s|%s>, committed by %s, failed"}' \
+            "https://github.com/$REPOSITORY/actions/runs/$RUN_ID" \
+            "$COMMIT_MESSAGE" \
+            "$COMMITTER")
+          
+          echo $JSON_PAYLOAD

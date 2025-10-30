@@ -6,7 +6,6 @@ jobs:
   failure-alert:
     name: Send pipeline failure alert
     runs-on: ubuntu-latest
-    continue-on-error: true
     if: always()
     steps:
       - uses: technote-space/workflow-conclusion-action@v3

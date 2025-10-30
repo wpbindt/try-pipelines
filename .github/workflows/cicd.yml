@@ -26,5 +26,5 @@ jobs:
 
   failure-alert-stage:
     name: Failure Alert Stage
-    needs: [ 'deploy-stage' ]
+    needs: [ 'commit-stage', 'acceptance-stage', 'deploy-stage' ]
     uses: ./.github/workflows/failure-alert.yml

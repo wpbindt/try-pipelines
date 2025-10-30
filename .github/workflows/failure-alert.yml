@@ -9,8 +9,9 @@ jobs:
     continue-on-error: true
     if: always()
     steps:
+      - uses: technote-space/workflow-conclusion-action@v2
       - name: Send Slack Message
-        if: failure()
+        if: env.WORKFLOW_CONCLUSION == 'failure'
         env:
           COMMITTER: ${{ github.actor }}
           RUN_ID: ${{ github.run_id }}

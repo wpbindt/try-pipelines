@@ -54,7 +54,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run tests
-        run: echo 'running integration tests'
+        run: flibby 'running integration tests'
 
   deploy-apps:
     name: Deploy App

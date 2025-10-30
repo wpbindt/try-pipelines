@@ -25,4 +25,4 @@ jobs:
           fetch-depth: 0
 
       - name: Deploy more infra
-        run: echo 'Deploy more infra'
+        run: flibby 'Deploy more infra'
